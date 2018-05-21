@@ -28,6 +28,7 @@ def Main_menu():
     addDir('[B][COLOR orange]Movies (Alpha)[/COLOR][/B]',BASEURL + '/movie-list',6,ART + 'movies.jpg',FANART,'')
     xbmc.executebuiltin('Container.SetViewMode(50)')
 
+
 def search(url):
     dirs1 = ['/dubbed-anime-list', '/cartoon-list', '/subbed-anime-list']
     dirs2 = ['/ova-list', '/movie-list']
@@ -40,17 +41,17 @@ def search(url):
     for dir in dirs1:
         OPEN = Open_Url(BASEURL + dir)
         Regex = re.compile('<div class="ddmcc">(.+?)</td>',re.DOTALL).findall(OPEN)
-        Regex2 = re.compile('<li><a href="(.+?)".+?>(.+?)</a></li>',re.DOTALL).findall(str(Regex))
+        Regex2 = re.compile('<a href="(.+?)".+?title="(.+?)"',re.DOTALL).findall(str(Regex))
         for url,name in Regex2:
             name = name.replace('&#8216;','\'').replace('&#8217;','\'').replace('&#8211;','-').replace('&#039;','\'').replace('&amp;','&').replace('\\xc3\\xa9','e').replace('\\','').replace('xc3xa4','a').replace('Pxc3xa2tissixc3xa8re','Patissiere').replace('xc3xa','i').replace('xe2x80x93','-').replace(' :',':').replace('xc3xb8','o').replace('xe2x80xa0',' ').replace('xc2xbd','½').replace("`","'").replace("xe2x80x99","'").replace('xc3x9f','ss').replace('xc2xb2','²').replace('xc3x97','x').replace('xc3xb1','ñ')
             if str(search.lower()) in str(name.lower()): addDir(name, url, 20, iconimage, FANART, '')
     for dir in dirs2:
         OPEN = Open_Url(BASEURL + dir)
         Regex = re.compile('<div class="ddmcc">(.+?)</td>',re.DOTALL).findall(OPEN)
-        Regex2 = re.compile('<a href="(.+?)" title="(.+?)"',re.DOTALL).findall(str(Regex))
+        Regex2 = re.compile('<li><a href="(.+?)">(.+?)</a></li>',re.DOTALL).findall(str(Regex))
         for url,name in Regex2:
-            name = name.replace('&#8216;','\'').replace('&#8217;','\'').replace('&#8211;','-').replace('#038;','').replace('&#039;','\'').replace('&amp;','&').replace('\\xc3\\xa9','e').replace('\\','').replace('English Dubbed','[COLOR blue](English Dubbed)[/COLOR]').replace('English Subbed','[COLOR red](English Subbed)[/COLOR]').replace('xe2x80x99','\'').replace('xe2x80x93','-').replace('&#215;','x').replace('&#8221;','"')
-            addDir(name, url, 100, ICON, FANART, '')
+            name = name.replace('&#8216;','\'').replace('&#8217;','\'').replace('&#8211;','-').replace('&#039;','\'').replace('&amp;','&').replace('\\xc3\\xa9','e').replace('\\','').replace('xc3xa4','a').replace('Pxc3xa2tissixc3xa8re','Patissiere').replace('xc3xa','i').replace('xe2x80x93','-').replace(' :',':').replace('xc3xb8','o').replace('xe2x80xa0',' ').replace('xc2xbd','½').replace("`","'").replace("xe2x80x99","'").replace('xc3x9f','ss').replace('xc2xb2','²').replace('xc3x97','x').replace('xc3xb1','ñ')
+            if str(search.lower()) in str(name.lower()): addDir(name, url, 100, iconimage, FANART, '')
 
 def all_list(url):
     OPEN = Open_Url(url)
@@ -91,7 +92,7 @@ def genre_list(url):
 def ova_list(url):
     OPEN = Open_Url(url)
     Regex = re.compile('<div class="ddmcc">(.+?)</td>',re.DOTALL).findall(OPEN)
-    Regex2 = re.compile('<a href="(.+?)" title="(.+?)"',re.DOTALL).findall(str(Regex))
+    Regex2 = re.compile('<li><a href="(.+?)">(.+?)</a></li>',re.DOTALL).findall(str(Regex))
     for url,name in Regex2:
         name = name.replace('&#8216;','\'').replace('&#8217;','\'').replace('&#8211;','-').replace('#038;','').replace('&#039;','\'').replace('&amp;','&').replace('\\xc3\\xa9','e').replace('\\','').replace('English Dubbed','[COLOR blue](English Dubbed)[/COLOR]').replace('English Subbed','[COLOR red](English Subbed)[/COLOR]').replace('xe2x80x99','\'').replace('xe2x80x93','-').replace('&#215;','x').replace('&#8221;','"')
         addDir(name,url,100,ICON,FANART,'')
@@ -171,11 +172,11 @@ def resolve(name,url,iconimage,description):
             url = url.replace('&#038;', '&')
         else:
             url = url.replace('embed', 'embed-adh')
-        url = requests.get(BASEURL + url)        
+        url = requests.get(BASEURL + url)
         url = re.findall(r'''file:\s*['\"]([^'\"]+)['\"](?:\,\s*label:\s*|)(?:['\"]|)([\d]+|)''', url.text)
         url = [(i[0],'0' if i[1] == '' else i[1]) for i in url]
         url = sorted(url, key=lambda x: int(x[1]),reverse=True)
-        
+
         if len(url) == 1: play_video(url[0][0])
         
         
