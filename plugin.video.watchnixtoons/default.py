@@ -166,7 +166,11 @@ def resolve(name,url,iconimage,description):
             i = re.findall(r'(\d+)',i)[0]
             i = chr(int(i) - int(spread))
             url += i
-        url = re.findall(r'src="(.*?)"', url.replace("embed", "embed-adh"))[0]
+        url = re.findall(r'src="(.*?)"', url)[0]
+        if '&#038;' in url:
+            url = url.replace('&#038;', '&')
+        else:
+            url = url.replace('embed', 'embed-adh')
         url = requests.get(BASEURL + url)        
         url = re.findall(r'''file:\s*['\"]([^'\"]+)['\"](?:\,\s*label:\s*|)(?:['\"]|)([\d]+|)''', url.text)
         url = [(i[0],'0' if i[1] == '' else i[1]) for i in url]
